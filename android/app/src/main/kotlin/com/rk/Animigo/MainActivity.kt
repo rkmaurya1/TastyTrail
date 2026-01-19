@@ -1,4 +1,4 @@
-package com.example.tasty_trail
+package com.rk.Animigo
 
 import io.flutter.embedding.android.FlutterActivity
 
