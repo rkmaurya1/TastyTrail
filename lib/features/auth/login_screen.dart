@@ -65,129 +65,147 @@ class _LoginScreenState extends State<LoginScreen>
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppConfig.primaryGradient,
-          ),
+        width: size.width,
+        height: size.height,
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFF8F0),
         ),
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
-            child: Column(
-              children: [
-                const Spacer(),
-                // Logo and App Name
-                Column(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.paddingLarge,
+                  vertical: AppConstants.paddingXL,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(AppConstants.paddingLarge),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadius.circular(AppConstants.radiusXL),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.restaurant_menu,
-                        size: 80,
-                        color: AppConfig.primaryColor,
-                      ),
+                    const SizedBox(height: 60),
+                    // Chef Hat Icon
+                    Icon(
+                      Icons.restaurant_menu,
+                      size: 80,
+                      color: AppConfig.primaryColor,
                     ),
-                    const SizedBox(height: AppConstants.paddingLarge),
+                    const SizedBox(height: AppConstants.paddingMedium),
+                    // App Name
                     Text(
                       AppConfig.appName,
-                      style: const TextStyle(
-                        fontSize: 42,
+                      style: TextStyle(
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.5,
+                        color: AppConfig.primaryColor,
+                        letterSpacing: 1.2,
                       ),
                     ),
                     const SizedBox(height: AppConstants.paddingSmall),
+                    // Tagline
                     Text(
-                      AppConfig.tagline,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white70,
-                        letterSpacing: 0.5,
+                      'Savor the Flavor,\nFind Your Path.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade700,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 60),
+                    // Food Illustrations
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Pizza slice
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.local_pizza,
+                            size: 60,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        // Pizza slice 2
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.local_pizza,
+                            size: 60,
+                            color: Colors.orange,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 80),
+                    // Google Sign In Button
+                    if (AppConfig.enableGoogleLogin)
+                      _buildModernButton(
+                        onPressed: _isLoading ? null : _handleGoogleSignIn,
+                        label: 'Sign in Google',
+                        icon: Icons.g_mobiledata,
+                        backgroundColor: AppConfig.primaryColor,
+                        textColor: Colors.white,
+                      ),
+                    const SizedBox(height: AppConstants.paddingMedium),
+                    // Guest Login Button
+                    OutlinedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => const HomeScreen(),
+                                ),
+                              );
+                            },
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 56),
+                        side: BorderSide(
+                          color: AppConfig.primaryColor,
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(
+                        'Guest Login',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppConfig.primaryColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    // Hamburger illustration at bottom
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.lunch_dining,
+                        size: 80,
+                        color: Colors.orange,
                       ),
                     ),
                   ],
                 ),
-                const Spacer(),
-                // Login Buttons
-                Container(
-                  width: size.width,
-                  padding: const EdgeInsets.all(AppConstants.paddingLarge),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(AppConstants.radiusXL),
-                      topRight: Radius.circular(AppConstants.radiusXL),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        AppStrings.welcome,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: AppConstants.paddingXL),
-                      // Google Sign In Button
-                      if (AppConfig.enableGoogleLogin)
-                        _buildLoginButton(
-                          onPressed: _isLoading ? null : _handleGoogleSignIn,
-                          icon: Icons.g_mobiledata,
-                          label: AppStrings.loginWithGoogle,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black87,
-                          borderColor: Colors.grey.shade300,
-                        ),
-                      if (AppConfig.enableGoogleLogin &&
-                          AppConfig.enablePhoneLogin)
-                        const SizedBox(height: AppConstants.paddingMedium),
-                      // Phone Sign In Button
-                      if (AppConfig.enablePhoneLogin)
-                        _buildLoginButton(
-                          onPressed: _isLoading ? null : () {},
-                          icon: Icons.phone,
-                          label: AppStrings.loginWithPhone,
-                          backgroundColor: AppConfig.primaryColor,
-                          textColor: Colors.white,
-                        ),
-                      if (AppConfig.enableGuestMode)
-                        const SizedBox(height: AppConstants.paddingMedium),
-                      // Guest Mode Button
-                      if (AppConfig.enableGuestMode)
-                        TextButton(
-                          onPressed: _isLoading ? null : () {},
-                          child: Text(
-                            AppStrings.continueAsGuest,
-                            style: TextStyle(
-                              color: AppConfig.primaryColor,
-                              fontSize: AppConstants.fontSizeRegular,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: AppConstants.paddingMedium),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -195,13 +213,12 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildLoginButton({
+  Widget _buildModernButton({
     required VoidCallback? onPressed,
-    required IconData icon,
     required String label,
+    required IconData icon,
     required Color backgroundColor,
     required Color textColor,
-    Color? borderColor,
   }) {
     return SizedBox(
       width: double.infinity,
@@ -212,26 +229,28 @@ class _LoginScreenState extends State<LoginScreen>
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
           elevation: 0,
-          side: borderColor != null ? BorderSide(color: borderColor) : null,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: _isLoading && onPressed == null
+        child: _isLoading
             ? const SizedBox(
                 height: 24,
                 width: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 24),
-                  const SizedBox(width: AppConstants.paddingMedium),
+                  Icon(icon, size: 28),
+                  const SizedBox(width: 12),
                   Text(
                     label,
                     style: const TextStyle(
-                      fontSize: AppConstants.fontSizeRegular,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

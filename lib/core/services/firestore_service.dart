@@ -4,6 +4,9 @@ import '../utils/constants.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Expose firestore instance for direct queries
+  FirebaseFirestore get firestore => _firestore;
+
   // ========== USER OPERATIONS ==========
 
   // Create or update user profile
@@ -107,13 +110,21 @@ class FirestoreService {
   Future<String> createOrder({
     required String userId,
     required List<Map<String, dynamic>> items,
-    required double subtotal,
-    required double deliveryCharge,
-    required double total,
-    required Map<String, dynamic> deliveryAddress,
-    String? notes,
+    required double totalAmount,
+    required String deliveryAddress,
+    required String phoneNumber,
+    required String customerName,
+    required String paymentMethod,
+    String? specialInstructions,
   }) async {
     try {
+      // Calculate subtotal and delivery charge
+      double subtotal = 0;
+      for (var item in items) {
+        subtotal += (item['price'] as double) * (item['quantity'] as int);
+      }
+      double deliveryCharge = subtotal > 0 ? 40.0 : 0.0;
+
       DocumentReference orderRef = await _firestore
           .collection(AppConstants.ordersCollection)
           .add({
@@ -121,9 +132,12 @@ class FirestoreService {
         'items': items,
         'subtotal': subtotal,
         'deliveryCharge': deliveryCharge,
-        'total': total,
+        'totalAmount': totalAmount,
         'deliveryAddress': deliveryAddress,
-        'notes': notes,
+        'phoneNumber': phoneNumber,
+        'customerName': customerName,
+        'paymentMethod': paymentMethod,
+        'specialInstructions': specialInstructions,
         'status': AppConstants.orderPending,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),

@@ -10,6 +10,7 @@ class MenuItem {
   final double rating;
   final int reviews;
   final List<String> tags;
+  final int preparationTime;
 
   MenuItem({
     required this.id,
@@ -23,6 +24,7 @@ class MenuItem {
     this.rating = 0.0,
     this.reviews = 0,
     this.tags = const [],
+    this.preparationTime = 20,
   });
 
   factory MenuItem.fromMap(Map<String, dynamic> map, String id) {
@@ -38,6 +40,7 @@ class MenuItem {
       rating: (map['rating'] ?? 0).toDouble(),
       reviews: map['reviews'] ?? 0,
       tags: List<String>.from(map['tags'] ?? []),
+      preparationTime: map['preparationTime'] ?? 20,
     );
   }
 
@@ -53,6 +56,7 @@ class MenuItem {
       'rating': rating,
       'reviews': reviews,
       'tags': tags,
+      'preparationTime': preparationTime,
     };
   }
 }
