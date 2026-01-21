@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/config/app_config.dart';
 import '../../core/services/cart_service.dart';
@@ -17,14 +18,98 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late int _currentIndex;
   final CartService _cartService = CartService();
+
+  // Banner carousel
+  late PageController _bannerPageController;
+  int _currentBannerPage = 0;
+  Timer? _bannerTimer;
+
+  // Animation controllers
+  late AnimationController _categoryAnimController;
+  late AnimationController _itemsAnimController;
+
+  final List<Map<String, dynamic>> _banners = [
+    {
+      'title1': 'DELICIOUS',
+      'title2': 'MENU',
+      'tag': 'SPECIAL OFFER',
+      'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80',
+      'bgImage': 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80',
+      'colors': [Color(0xFFFF6B35), Color(0xFFFF5722)],
+    },
+    {
+      'title1': 'FRESH',
+      'title2': 'SALADS',
+      'tag': 'HEALTHY CHOICE',
+      'image': 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&q=80',
+      'bgImage': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+      'colors': [Color(0xFF43A047), Color(0xFF2E7D32)],
+    },
+    {
+      'title1': 'TASTY',
+      'title2': 'BURGERS',
+      'tag': 'COMBO DEALS',
+      'image': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80',
+      'bgImage': 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=80',
+      'colors': [Color(0xFFE65100), Color(0xFFBF360C)],
+    },
+    {
+      'title1': 'SWEET',
+      'title2': 'TREATS',
+      'tag': 'DESSERT TIME',
+      'image': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&q=80',
+      'bgImage': 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=80',
+      'colors': [Color(0xFFD81B60), Color(0xFFC2185B)],
+    },
+  ];
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
+
+    // Banner setup
+    _bannerPageController = PageController(viewportFraction: 0.92);
+    _startAutoScroll();
+
+    // Animation controllers
+    _categoryAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _itemsAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    // Start animations
+    _categoryAnimController.forward();
+    _itemsAnimController.forward();
+  }
+
+  void _startAutoScroll() {
+    _bannerTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_bannerPageController.hasClients) {
+        int nextPage = (_currentBannerPage + 1) % _banners.length;
+        _bannerPageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _bannerTimer?.cancel();
+    _bannerPageController.dispose();
+    _categoryAnimController.dispose();
+    _itemsAnimController.dispose();
+    super.dispose();
   }
 
   @override
@@ -147,164 +232,54 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: AppConstants.paddingLarge),
-          // Banner with Real Food Image
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MenuScreen()),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.paddingMedium),
-              height: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.orange.shade600,
-                    Colors.red.shade500,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: [
-                  // Background pattern
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80',
-                        fit: BoxFit.cover,
-                        opacity: const AlwaysStoppedAnimation(0.3),
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(color: Colors.orange);
-                        },
+          // Animated Banner Carousel
+          SizedBox(
+            height: 180,
+            child: PageView.builder(
+              controller: _bannerPageController,
+              onPageChanged: (index) {
+                setState(() => _currentBannerPage = index);
+              },
+              itemCount: _banners.length,
+              itemBuilder: (context, index) {
+                return AnimatedBuilder(
+                  animation: _bannerPageController,
+                  builder: (context, child) {
+                    double value = 1.0;
+                    if (_bannerPageController.position.haveDimensions) {
+                      value = (_bannerPageController.page ?? 0) - index;
+                      value = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
+                    }
+                    return Center(
+                      child: SizedBox(
+                        height: Curves.easeOut.transform(value) * 180,
+                        child: child,
                       ),
-                    ),
-                  ),
-                  // Content
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Text(
-                                  'SPECIAL OFFER',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                'DELICIOUS',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.1,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 10,
-                                      color: Colors.black26,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Text(
-                                'MENU',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w900,
-                                  height: 1.1,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 10,
-                                      color: Colors.black26,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  'Order Now',
-                                  style: TextStyle(
-                                    color: Colors.orange,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Food Image
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80',
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: 120,
-                                height: 120,
-                                color: Colors.white24,
-                                child: const Icon(
-                                  Icons.fastfood,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                    );
+                  },
+                  child: _buildBannerCard(_banners[index]),
+                );
+              },
             ),
+          ),
+          const SizedBox(height: 12),
+          // Banner Indicators
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(_banners.length, (index) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                height: 8,
+                width: _currentBannerPage == index ? 24 : 8,
+                decoration: BoxDecoration(
+                  color: _currentBannerPage == index
+                      ? AppConfig.primaryColor
+                      : Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              );
+            }),
           ),
           const SizedBox(height: AppConstants.paddingLarge),
           // Categories Section
@@ -340,35 +315,39 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: AppConstants.paddingMedium),
-          // Category Icons
+          // Category Icons with Animation
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildCategoryIcon(
+                _buildAnimatedCategory(
                   'Fast Food',
                   Icons.fastfood,
                   const Color(0xFFFFF3E0),
                   Colors.orange,
+                  0,
                 ),
-                _buildCategoryIcon(
+                _buildAnimatedCategory(
                   'Salads',
                   Icons.lunch_dining,
                   const Color(0xFFE8F5E9),
                   Colors.green,
+                  1,
                 ),
-                _buildCategoryIcon(
+                _buildAnimatedCategory(
                   'Seafood',
                   Icons.set_meal,
                   const Color(0xFFE3F2FD),
                   Colors.blue,
+                  2,
                 ),
-                _buildCategoryIcon(
+                _buildAnimatedCategory(
                   'Desserts',
                   Icons.cake,
                   const Color(0xFFFCE4EC),
                   Colors.pink,
+                  3,
                 ),
               ],
             ),
@@ -407,33 +386,264 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: AppConstants.paddingMedium),
-          // Popular Items Horizontal List
+          // Popular Items Horizontal List with Animation
           SizedBox(
             height: 200,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
               children: [
-                _buildPopularItemCard(
+                _buildAnimatedPopularItem(
                   'Cheeseburger',
                   'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
                   4.5,
+                  0,
                 ),
-                _buildPopularItemCard(
+                _buildAnimatedPopularItem(
                   'Greek Salad',
                   'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80',
                   4.8,
+                  1,
                 ),
-                _buildPopularItemCard(
+                _buildAnimatedPopularItem(
                   'Chocolate Cake',
                   'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
                   4.7,
+                  2,
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppConstants.paddingLarge),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBannerCard(Map<String, dynamic> banner) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MenuScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: banner['colors'] as List<Color>,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: (banner['colors'] as List<Color>)[0].withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background Image
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  banner['bgImage'] as String,
+                  fit: BoxFit.cover,
+                  opacity: const AlwaysStoppedAnimation(0.2),
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(color: Colors.transparent);
+                  },
+                ),
+              ),
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            banner['tag'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          banner['title1'] as String,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            height: 1.1,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10,
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          banner['title2'] as String,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            height: 1.1,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10,
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Text(
+                            'Order Now',
+                            style: TextStyle(
+                              color: (banner['colors'] as List<Color>)[0],
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Food Image
+                  Hero(
+                    tag: 'banner_${banner['image']}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.network(
+                        banner['image'] as String,
+                        width: 120,
+                        height: 140,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 120,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Icon(
+                              Icons.fastfood,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedCategory(
+    String label,
+    IconData icon,
+    Color bgColor,
+    Color iconColor,
+    int index,
+  ) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _categoryAnimController,
+          curve: Interval(
+            index * 0.15,
+            0.6 + (index * 0.15),
+            curve: Curves.easeOut,
+          ),
+        ),
+      ),
+      child: FadeTransition(
+        opacity: _categoryAnimController,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+            CurvedAnimation(
+              parent: _categoryAnimController,
+              curve: Interval(
+                index * 0.15,
+                0.6 + (index * 0.15),
+                curve: Curves.easeOut,
+              ),
+            ),
+          ),
+          child: _buildCategoryIcon(label, icon, bgColor, iconColor),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedPopularItem(
+    String name,
+    String imageUrl,
+    double rating,
+    int index,
+  ) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _itemsAnimController,
+          curve: Interval(
+            index * 0.2,
+            0.5 + (index * 0.2),
+            curve: Curves.easeOut,
+          ),
+        ),
+      ),
+      child: FadeTransition(
+        opacity: _itemsAnimController,
+        child: _buildPopularItemCard(name, imageUrl, rating),
       ),
     );
   }
