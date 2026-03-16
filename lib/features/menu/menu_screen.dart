@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/config/app_config.dart';
 import '../../core/services/cart_service.dart';
+import '../../core/services/firestore_service.dart';
 import 'menu_model.dart';
 import '../cart/cart_screen.dart';
 
@@ -13,170 +15,18 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   final CartService _cartService = CartService();
+  final FirestoreService _firestoreService = FirestoreService();
   String _selectedCategory = 'All';
 
   final List<String> _categories = [
-    'All',
-    'Pizza',
-    'Burgers',
-    'Drinks',
-    'Desserts',
+    'All', 'Pizza', 'Burgers', 'Drinks', 'Desserts', 'Salads',
   ];
 
-  // Sample menu items with online images
-  final List<MenuItem> _menuItems = [
-    MenuItem(
-      id: '1',
-      name: 'Margherita Pizza',
-      description: 'Classic pizza with fresh tomato sauce and mozzarella',
-      price: 349.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80',
-      category: 'Pizza',
-      isVeg: true,
-      rating: 4.5,
-      preparationTime: 25,
-    ),
-    MenuItem(
-      id: '2',
-      name: 'Classic Cheeseburger',
-      description: 'Juicy beef patty with cheese, lettuce and tomato',
-      price: 299.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
-      category: 'Burgers',
-      isVeg: false,
-      rating: 4.7,
-      preparationTime: 20,
-    ),
-    MenuItem(
-      id: '3',
-      name: 'Chocolate Cupcake',
-      description: 'Rich chocolate cupcake with creamy frosting',
-      price: 149.0,
-      imageUrl: 'https://images.unsplash.com/photo-1587668178277-295251f900ce?w=400&q=80',
-      category: 'Desserts',
-      isVeg: true,
-      rating: 4.8,
-      preparationTime: 15,
-    ),
-    MenuItem(
-      id: '4',
-      name: 'Chocolate Cake',
-      description: 'Decadent layered chocolate cake',
-      price: 399.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
-      category: 'Desserts',
-      isVeg: true,
-      rating: 4.9,
-      preparationTime: 30,
-    ),
-    MenuItem(
-      id: '5',
-      name: 'Crispy Chicken Burger',
-      description: 'Crispy fried chicken with special sauce',
-      price: 329.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&q=80',
-      category: 'Burgers',
-      isVeg: false,
-      rating: 4.6,
-      preparationTime: 20,
-    ),
-    MenuItem(
-      id: '6',
-      name: 'Pepperoni Pizza',
-      description: 'Loaded with pepperoni and mozzarella cheese',
-      price: 399.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&q=80',
-      category: 'Pizza',
-      isVeg: false,
-      rating: 4.7,
-      preparationTime: 25,
-    ),
-    MenuItem(
-      id: '7',
-      name: 'Strawberry Shake',
-      description: 'Refreshing strawberry milkshake',
-      price: 179.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80',
-      category: 'Drinks',
-      isVeg: true,
-      rating: 4.4,
-      preparationTime: 10,
-    ),
-    MenuItem(
-      id: '8',
-      name: 'Ice Cream Sundae',
-      description: 'Vanilla ice cream with chocolate sauce and cherry',
-      price: 199.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80',
-      category: 'Desserts',
-      isVeg: true,
-      rating: 4.6,
-      preparationTime: 5,
-    ),
-    MenuItem(
-      id: '9',
-      name: 'Veggie Supreme Pizza',
-      description: 'Loaded with fresh vegetables and cheese',
-      price: 369.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1571407970349-bc81e7e96a47?w=400&q=80',
-      category: 'Pizza',
-      isVeg: true,
-      rating: 4.5,
-      preparationTime: 25,
-    ),
-    MenuItem(
-      id: '10',
-      name: 'Double Patty Burger',
-      description: 'Two beef patties with cheese and special sauce',
-      price: 429.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80',
-      category: 'Burgers',
-      isVeg: false,
-      rating: 4.8,
-      preparationTime: 25,
-    ),
-    MenuItem(
-      id: '11',
-      name: 'Fresh Orange Juice',
-      description: 'Freshly squeezed orange juice',
-      price: 129.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80',
-      category: 'Drinks',
-      isVeg: true,
-      rating: 4.5,
-      preparationTime: 5,
-    ),
-    MenuItem(
-      id: '12',
-      name: 'Red Velvet Cake',
-      description: 'Classic red velvet with cream cheese frosting',
-      price: 449.0,
-      imageUrl:
-          'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=400&q=80',
-      category: 'Desserts',
-      isVeg: true,
-      rating: 4.7,
-      preparationTime: 30,
-    ),
-  ];
-
-  List<MenuItem> get _filteredItems {
+  Stream<QuerySnapshot> get _menuStream {
     if (_selectedCategory == 'All') {
-      return _menuItems;
+      return _firestoreService.getMenuItems();
     }
-    return _menuItems
-        .where((item) => item.category == _selectedCategory)
-        .toList();
+    return _firestoreService.getMenuItemsByCategory(_selectedCategory);
   }
 
   @override
@@ -269,18 +119,43 @@ class _MenuScreenState extends State<MenuScreen> {
           ),
           // Menu Items Grid
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: _filteredItems.length,
-              itemBuilder: (context, index) {
-                final item = _filteredItems[index];
-                return _buildMenuItem(item);
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _menuStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(color: AppConfig.primaryColor),
+                  );
+                }
+                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.restaurant_menu, size: 60, color: Colors.grey.shade400),
+                        const SizedBox(height: 12),
+                        Text(
+                          'No items found',
+                          style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                final items = snapshot.data!.docs
+                    .map((doc) => MenuItem.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+                    .toList();
+                return GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) => _buildMenuItem(items[index]),
+                );
               },
             ),
           ),

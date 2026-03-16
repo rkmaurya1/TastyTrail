@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app.dart';
-// import 'core/config/flavor.dart';
+import 'core/services/firestore_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp();
 
-  // Optional: Set flavor for white-label configuration
-  // FlavorConfig(FlavorType.restaurant1);
+  // Seed initial data to Firestore if empty
+  FirestoreService().seedInitialData();
 
   runApp(const MyApp());
 }

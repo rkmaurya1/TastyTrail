@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/config/app_config.dart';
 import '../../core/services/cart_service.dart';
+import '../../core/services/firestore_service.dart';
 import '../../core/utils/constants.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/search_bar_widget.dart';
+import '../menu/menu_model.dart';
 import '../menu/menu_screen.dart';
 import '../cart/cart_screen.dart';
 import '../orders/orders_screen.dart';
@@ -21,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late int _currentIndex;
   final CartService _cartService = CartService();
+  final FirestoreService _firestoreService = FirestoreService();
 
   // Banner carousel
   late PageController _bannerPageController;
@@ -251,9 +255,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       value = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
                     }
                     return Center(
-                      child: SizedBox(
-                        height: Curves.easeOut.transform(value) * 180,
-                        child: child,
+                      child: ClipRect(
+                        child: SizedBox(
+                          height: Curves.easeOut.transform(value) * 180,
+                          child: child,
+                        ),
                       ),
                     );
                   },
@@ -386,32 +392,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
           const SizedBox(height: AppConstants.paddingMedium),
-          // Popular Items Horizontal List with Animation
+          // Popular Items Horizontal List from Firestore
           SizedBox(
-            height: 200,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
-              children: [
-                _buildAnimatedPopularItem(
-                  'Cheeseburger',
-                  'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
-                  4.5,
-                  0,
-                ),
-                _buildAnimatedPopularItem(
-                  'Greek Salad',
-                  'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80',
-                  4.8,
-                  1,
-                ),
-                _buildAnimatedPopularItem(
-                  'Chocolate Cake',
-                  'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80',
-                  4.7,
-                  2,
-                ),
-              ],
+            height: 220,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestoreService.getPopularMenuItems(),
+              builder: (context, snapshot) {
+                List<MenuItem> items = [];
+                if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                  items = snapshot.data!.docs
+                      .map((doc) => MenuItem.fromMap(doc.data() as Map<String, dynamic>, doc.id))
+                      .toList();
+                }
+                if (items.isEmpty) {
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
+                    children: [
+                      _buildAnimatedPopularItem('Cheeseburger', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80', 4.7, 0),
+                      _buildAnimatedPopularItem('Greek Salad', 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80', 4.8, 1),
+                      _buildAnimatedPopularItem('Chocolate Cake', 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80', 4.9, 2),
+                    ],
+                  );
+                }
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingMedium),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) => _buildAnimatedPopularItem(
+                    items[index].name,
+                    items[index].imageUrl,
+                    items[index].rating,
+                    index,
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(height: AppConstants.paddingLarge),
@@ -596,8 +611,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         CurvedAnimation(
           parent: _categoryAnimController,
           curve: Interval(
-            index * 0.15,
-            0.6 + (index * 0.15),
+            (index * 0.15).clamp(0.0, 0.9),
+            (0.6 + (index * 0.15)).clamp(0.0, 1.0),
             curve: Curves.easeOut,
           ),
         ),
@@ -609,8 +624,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             CurvedAnimation(
               parent: _categoryAnimController,
               curve: Interval(
-                index * 0.15,
-                0.6 + (index * 0.15),
+                (index * 0.15).clamp(0.0, 0.9),
+                (0.6 + (index * 0.15)).clamp(0.0, 1.0),
                 curve: Curves.easeOut,
               ),
             ),
@@ -635,8 +650,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         CurvedAnimation(
           parent: _itemsAnimController,
           curve: Interval(
-            index * 0.2,
-            0.5 + (index * 0.2),
+            (index * 0.2).clamp(0.0, 0.8),
+            (0.5 + (index * 0.2)).clamp(0.0, 1.0),
             curve: Curves.easeOut,
           ),
         ),

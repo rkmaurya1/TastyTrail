@@ -39,6 +39,7 @@ dependencies:
 
   # UI & Design
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
 
   # State Management (optional - uncomment if needed)
   # provider: ^6.1.1
@@ -73,10 +74,10 @@ flutter:
 
   uses-material-design: true
 
-  # Assets
-  assets:
-    - assets/images/
-    - assets/fonts/
+  # Assets (uncomment when you add files to these directories)
+  # assets:
+  #   - assets/images/
+  #   - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
