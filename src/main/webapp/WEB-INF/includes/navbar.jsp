@@ -24,7 +24,16 @@
         </li>
         <li class="nav-item">
           <a class="nav-link <%= currentUri.contains("menu") ? "active" : "" %>"
-             href="${pageContext.request.contextPath}/menu">Menu</a>
+             href="${pageContext.request.contextPath}/menu">Our Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/#categories">Foods</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/#about">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/#contact">Contact Us</a>
         </li>
         <% if (navUser != null) { %>
         <li class="nav-item">

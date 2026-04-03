@@ -57,62 +57,91 @@
 <!-- ===================== HERO ===================== -->
 <section class="hero">
   <div class="hero-bg-overlay"></div>
-  <div class="container">
-    <div class="row align-items-center g-4">
+  <!-- Animated dots -->
+  <div class="hero-dots">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="row align-items-center g-4 min-vh-hero">
       <div class="col-lg-6 hero-content">
         <div class="hero-badge" data-aos="fade-down" data-aos-delay="100">
           <i class="bi bi-lightning-charge-fill"></i> Free delivery on all orders
         </div>
         <h1 data-aos="fade-up" data-aos-delay="150">
-          Sab kuch ek jagah,<br><span>TastyTrail pe!</span>
+          Sab kuch ek jagah,<br><span class="hero-brand-text">TastyTrail pe!</span>
         </h1>
-        <p data-aos="fade-up" data-aos-delay="200">
-          North Indian, Pizza, Burgers, Biryani, Chinese aur bahut kuch — fresh ghar tak
+        <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+          North Indian &bull; Pizza &bull; Burgers &bull; Biryani &bull; Chinese — <strong style="color:rgba(255,255,255,0.9);">fresh ghar tak</strong>
         </p>
 
         <div class="hero-actions" data-aos="fade-up" data-aos-delay="250">
           <a href="${pageContext.request.contextPath}/menu" class="btn-hero-primary">
-            <i class="bi bi-menu-button-wide me-2"></i> Order Now
+            <i class="bi bi-bag-fill me-2"></i> Order Now
           </a>
           <a href="#categories" class="btn-hero-secondary">
-            Browse Menu <i class="bi bi-arrow-down ms-2"></i>
+            Explore Menu <i class="bi bi-chevron-down ms-2"></i>
           </a>
         </div>
 
-        <div class="hero-stats" data-aos="fade-up" data-aos-delay="300">
-          <div class="hero-stat">
-            <span class="num"><%= menuByCategory.values().stream().mapToInt(List::size).sum() %>+</span>
-            <span class="label">Menu Items</span>
+        <div class="hero-stats-row" data-aos="fade-up" data-aos-delay="320">
+          <div class="hero-stat-box">
+            <i class="bi bi-collection-fill" style="color:var(--accent);font-size:1.3rem;"></i>
+            <div>
+              <span class="num"><%= menuByCategory.values().stream().mapToInt(List::size).sum() %>+</span>
+              <span class="label">Menu Items</span>
+            </div>
           </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat">
-            <span class="num"><%= restaurant != null ? restaurant.getDeliveryTime() : 30 %> min</span>
-            <span class="label">Avg Delivery</span>
+          <div class="hero-stat-box">
+            <i class="bi bi-clock-fill" style="color:#45aaf2;font-size:1.3rem;"></i>
+            <div>
+              <span class="num"><%= restaurant != null ? restaurant.getDeliveryTime() : 30 %> min</span>
+              <span class="label">Fast Delivery</span>
+            </div>
           </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat">
-            <span class="num">FREE</span>
-            <span class="label">Delivery</span>
+          <div class="hero-stat-box">
+            <i class="bi bi-bicycle" style="color:#26de81;font-size:1.3rem;"></i>
+            <div>
+              <span class="num">FREE</span>
+              <span class="label">Delivery</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left" data-aos-delay="200">
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center" data-aos="zoom-in" data-aos-delay="200">
         <div class="hero-img-container">
-          <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=85&fit=crop"
+          <!-- Glow ring -->
+          <div class="hero-img-glow"></div>
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=85&fit=crop"
                alt="TastyTrail Food" class="hero-main-img">
-          <div class="hero-float-card top-right">
-            <i class="bi bi-star-fill" style="color:#f7b731;font-size:1.2rem;"></i>
+
+          <!-- Floating chips -->
+          <div class="hero-chip chip-1" data-aos="fade-left" data-aos-delay="500">
+            <i class="bi bi-star-fill" style="color:#f7b731;"></i>
             <div>
-              <div style="font-weight:700;font-size:0.9rem;"><%= restaurant != null ? restaurant.getRating() : "4.8" %> Rating</div>
-              <div style="font-size:0.72rem;color:#686b78;">Customer Rating</div>
+              <div class="chip-title"><%= restaurant != null ? restaurant.getRating() : "4.8" %> Rating</div>
+              <div class="chip-sub">2k+ Reviews</div>
             </div>
           </div>
-          <div class="hero-float-card bottom-left">
-            <div class="delivery-icon-wrap"><i class="bi bi-bicycle" style="color:#CB202D;font-size:1.2rem;"></i></div>
+
+          <div class="hero-chip chip-2" data-aos="fade-right" data-aos-delay="600">
+            <div class="chip-icon-wrap" style="background:#fff0f1;">
+              <i class="bi bi-bicycle" style="color:#CB202D;"></i>
+            </div>
             <div>
-              <div style="font-weight:700;font-size:0.9rem;">Free Delivery</div>
-              <div style="font-size:0.72rem;color:#686b78;">On every order</div>
+              <div class="chip-title">Free Delivery</div>
+              <div class="chip-sub">On every order</div>
+            </div>
+          </div>
+
+          <div class="hero-chip chip-3" data-aos="fade-up" data-aos-delay="700">
+            <div class="chip-icon-wrap" style="background:#f0fff8;">
+              <i class="bi bi-check-circle-fill" style="color:#26de81;"></i>
+            </div>
+            <div>
+              <div class="chip-title">Fresh & Hot</div>
+              <div class="chip-sub">Always guaranteed</div>
             </div>
           </div>
         </div>
@@ -267,6 +296,150 @@
       <a href="${pageContext.request.contextPath}/menu" class="btn-cta">
         <i class="bi bi-bag-fill me-2"></i> Order Now
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT US ===================== -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="about-img-wrap">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=450&fit=crop&q=85"
+               alt="About TastyTrail" class="about-main-img">
+          <div class="about-badge-box">
+            <div class="about-badge-icon"><i class="bi bi-award-fill"></i></div>
+            <div>
+              <div style="font-weight:700;font-size:1rem;color:#1C1C1C;">Est. 2024</div>
+              <div style="font-size:0.78rem;color:#686b78;">Serving with love</div>
+            </div>
+          </div>
+          <div class="about-stat-pill">
+            <i class="bi bi-people-fill" style="color:#CB202D;"></i>
+            <span><strong>10K+</strong> Happy Customers</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+        <div class="about-badge-tag">About Us</div>
+        <h2 class="section-title" style="font-size:2rem;">
+          Apna ghar, <span>apna khana</span>
+        </h2>
+        <p style="color:#686b78;font-size:1rem;line-height:1.8;margin-bottom:20px;">
+          TastyTrail ek aisi jagah hai jahan aapko apni pasandida dish ke liye
+          kahin door nahi jaana padta. Hum laate hain North Indian curries se leke
+          crispy pizzas, juicy burgers, aur aromatic biryani — sab kuch fresh aur
+          garam, seedha aapke darwaze tak.
+        </p>
+        <p style="color:#686b78;font-size:1rem;line-height:1.8;margin-bottom:28px;">
+          Hamaara mission simple hai — <strong style="color:#1C1C1C;">quality food, fast delivery, aur
+          genuine taste</strong> — har baar, bina fail ke.
+        </p>
+        <div class="about-features">
+          <div class="about-feature-item" data-aos="fade-up" data-aos-delay="150">
+            <div class="about-feature-icon" style="background:#fff0f1;color:#CB202D;">
+              <i class="bi bi-fire"></i>
+            </div>
+            <div>
+              <div style="font-weight:700;color:#1C1C1C;">Fresh Ingredients</div>
+              <div style="font-size:0.82rem;color:#686b78;">Daily sourced, always fresh</div>
+            </div>
+          </div>
+          <div class="about-feature-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="about-feature-icon" style="background:#f0fff8;color:#20bf6b;">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <div>
+              <div style="font-weight:700;color:#1C1C1C;">Hygienic Kitchen</div>
+              <div style="font-size:0.82rem;color:#686b78;">FSSAI certified standards</div>
+            </div>
+          </div>
+          <div class="about-feature-item" data-aos="fade-up" data-aos-delay="250">
+            <div class="about-feature-icon" style="background:#f0f4ff;color:#45aaf2;">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <div>
+              <div style="font-weight:700;color:#1C1C1C;">On-Time Delivery</div>
+              <div style="font-size:0.82rem;color:#686b78;">30 min guaranteed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT US ===================== -->
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <div class="about-badge-tag mx-auto">Contact Us</div>
+      <h2 class="section-title" style="font-size:2rem;margin-top:12px;">
+        Baat karo <span>humse</span>
+      </h2>
+      <p style="color:#686b78;">Koi bhi sawal ho — hum yahan hain!</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Contact Info Cards -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+        <div class="contact-card">
+          <div class="contact-icon" style="background:linear-gradient(135deg,#FF6B6B,#ee5a24);">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <h5>Our Location</h5>
+          <p>123 Food Street, Connaught Place<br>New Delhi - 110001</p>
+          <a href="#" class="contact-link">Get Directions <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="contact-card">
+          <div class="contact-icon" style="background:linear-gradient(135deg,#45aaf2,#2d98da);">
+            <i class="bi bi-telephone-fill"></i>
+          </div>
+          <h5>Call Us</h5>
+          <p>+91 98765 43210<br>Mon–Sun: 9 AM – 11 PM</p>
+          <a href="tel:+919876543210" class="contact-link">Call Now <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="contact-card">
+          <div class="contact-icon" style="background:linear-gradient(135deg,#26de81,#20bf6b);">
+            <i class="bi bi-envelope-fill"></i>
+          </div>
+          <h5>Email Us</h5>
+          <p>hello@tastytrail.com<br>We reply within 2 hours</p>
+          <a href="mailto:hello@tastytrail.com" class="contact-link">Send Email <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-lg-8 mt-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="contact-form-card">
+          <h4 style="font-weight:700;margin-bottom:6px;">Send us a message</h4>
+          <p style="color:#686b78;font-size:0.9rem;margin-bottom:24px;">Feedback, complaint, ya koi bhi baat — hum sunenge!</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input type="text" class="contact-input" placeholder="Your Name">
+            </div>
+            <div class="col-md-6">
+              <input type="email" class="contact-input" placeholder="Email Address">
+            </div>
+            <div class="col-12">
+              <input type="text" class="contact-input" placeholder="Subject">
+            </div>
+            <div class="col-12">
+              <textarea class="contact-input" rows="4" placeholder="Your message..."></textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn-contact-submit">
+                <i class="bi bi-send-fill me-2"></i> Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
