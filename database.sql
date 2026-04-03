@@ -1,12 +1,12 @@
--- TastyTrail Database Schema (PostgreSQL)
--- Run: psql -U tryenor -f database.sql
+-- TastyTrail Database Schema (MySQL)
+-- Run: mysql -u root -p < database.sql
 
-CREATE DATABASE tastytrail;
-\c tastytrail;
+CREATE DATABASE IF NOT EXISTS tastytrail;
+USE tastytrail;
 
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -14,12 +14,13 @@ CREATE TABLE IF NOT EXISTS users (
     address TEXT,
     city VARCHAR(50),
     profile_pic VARCHAR(255) DEFAULT 'default-avatar.png',
+    role ENUM('USER','ADMIN','DRIVER') DEFAULT 'USER',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Restaurants Table
 CREATE TABLE IF NOT EXISTS restaurants (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT,
     cuisine VARCHAR(100),
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
     city VARCHAR(50),
     phone VARCHAR(15),
     image VARCHAR(255) DEFAULT 'default-restaurant.jpg',
-    rating NUMERIC(2,1) DEFAULT 4.0,
+    rating DECIMAL(2,1) DEFAULT 4.0,
     delivery_time INT DEFAULT 30,
     min_order INT DEFAULT 0,
     delivery_fee INT DEFAULT 0,
@@ -38,48 +39,55 @@ CREATE TABLE IF NOT EXISTS restaurants (
 
 -- Menu Categories Table
 CREATE TABLE IF NOT EXISTS menu_categories (
-    id SERIAL PRIMARY KEY,
-    restaurant_id INT NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    restaurant_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
-    display_order INT DEFAULT 0
+    display_order INT DEFAULT 0,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
 );
 
 -- Menu Items Table
 CREATE TABLE IF NOT EXISTS menu_items (
-    id SERIAL PRIMARY KEY,
-    restaurant_id INT NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
-    category_id INT REFERENCES menu_categories(id) ON DELETE SET NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    restaurant_id INT NOT NULL,
+    category_id INT,
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    price NUMERIC(8,2) NOT NULL,
+    price DECIMAL(8,2) NOT NULL,
     image VARCHAR(255) DEFAULT 'default-food.jpg',
     is_veg BOOLEAN DEFAULT TRUE,
     is_available BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES menu_categories(id) ON DELETE SET NULL
 );
 
 -- Orders Table
-CREATE TYPE order_status AS ENUM ('PLACED','CONFIRMED','PREPARING','OUT_FOR_DELIVERY','DELIVERED','CANCELLED');
-
 CREATE TABLE IF NOT EXISTS orders (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id),
-    restaurant_id INT NOT NULL REFERENCES restaurants(id),
-    total_amount NUMERIC(10,2) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    restaurant_id INT NOT NULL,
+    driver_id INT,
+    total_amount DECIMAL(10,2) NOT NULL,
     delivery_address TEXT NOT NULL,
-    status order_status DEFAULT 'PLACED',
+    status ENUM('PLACED','CONFIRMED','PREPARING','OUT_FOR_DELIVERY','DELIVERED','CANCELLED') DEFAULT 'PLACED',
     payment_method VARCHAR(50) DEFAULT 'COD',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id),
+    FOREIGN KEY (driver_id) REFERENCES users(id)
 );
 
 -- Order Items Table
 CREATE TABLE IF NOT EXISTS order_items (
-    id SERIAL PRIMARY KEY,
-    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    menu_item_id INT NOT NULL REFERENCES menu_items(id),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    menu_item_id INT NOT NULL,
     quantity INT NOT NULL,
-    price NUMERIC(8,2) NOT NULL
+    price DECIMAL(8,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
 );
 
 -- ==================== SAMPLE DATA ====================
