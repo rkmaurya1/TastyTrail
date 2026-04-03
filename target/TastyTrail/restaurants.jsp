@@ -6,8 +6,6 @@
     String searchQuery = (String) request.getAttribute("searchQuery");
     String selectedCuisine = (String) request.getAttribute("selectedCuisine");
     Boolean vegFilter = (Boolean) request.getAttribute("vegFilter");
-
-    String[] bgClasses = {"bg-food-1","bg-food-2","bg-food-3","bg-food-4","bg-food-5","bg-food-6","bg-food-7","bg-food-8"};
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +15,8 @@
   <title>Restaurants — TastyTrail</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   <script>var contextPath = '${pageContext.request.contextPath}';</script>
 </head>
@@ -29,133 +28,97 @@
 <%@ include file="/WEB-INF/includes/navbar.jsp" %>
 
 <!-- Page Header -->
-<div style="background:linear-gradient(135deg,#1a1a2e,#0f3460);padding:40px 0;">
-  <div class="container">
-    <h1 style="color:white;font-weight:700;font-size:1.8rem;margin-bottom:16px;">
+<div class="page-hero">
+  <div class="page-hero-overlay"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <h1 class="page-hero-title" data-aos="fade-up">
       <% if (searchQuery != null) { %>
         Results for "<%= searchQuery %>"
       <% } else if (selectedCuisine != null) { %>
-        <%= selectedCuisine %> Restaurants
+        <i class="bi bi-collection me-2"></i><%= selectedCuisine %> Restaurants
       <% } else if (vegFilter != null && vegFilter) { %>
-        Pure Veg Restaurants
+        🌿 Pure Veg Restaurants
       <% } else { %>
-        All Restaurants
+        <i class="bi bi-shop me-2"></i>All Restaurants
       <% } %>
     </h1>
-    <!-- Search bar -->
-    <form action="${pageContext.request.contextPath}/restaurants" method="get">
-      <div style="background:white;border-radius:10px;padding:6px;display:flex;
-                  align-items:center;gap:8px;max-width:500px;">
-        <i class="bi bi-search" style="color:#aaa;padding-left:8px;"></i>
-        <input type="text" name="q" class="border-0 flex-grow-1"
-               style="outline:none;font-family:Poppins,sans-serif;font-size:0.9rem;"
+    <form action="${pageContext.request.contextPath}/restaurants" method="get" data-aos="fade-up" data-aos-delay="100">
+      <div class="page-search-bar">
+        <i class="bi bi-search" style="color:#aaa;padding-left:14px;font-size:1rem;"></i>
+        <input type="text" name="q"
                placeholder="Search restaurants, cuisines..."
                value="<%= searchQuery != null ? searchQuery : "" %>">
-        <button type="submit"
-                style="background:#CB202D;color:white;border:none;border-radius:7px;
-                       padding:8px 18px;font-weight:600;font-family:Poppins,sans-serif;cursor:pointer;">
-          Search
-        </button>
+        <button type="submit">Search</button>
       </div>
     </form>
   </div>
 </div>
 
 <!-- Filters -->
-<div style="background:white;border-bottom:1px solid #e8e8e8;padding:12px 0;sticky top:64px;">
+<div class="filter-bar" data-aos="fade-down">
   <div class="container">
     <div class="d-flex align-items-center gap-2 flex-wrap">
-      <span style="font-size:0.85rem;font-weight:600;color:#686b78;">Filter by:</span>
+      <span class="filter-label">Filter by:</span>
       <a href="${pageContext.request.contextPath}/restaurants"
-         class="filter-pill <%= (searchQuery == null && selectedCuisine == null && vegFilter == null) ? "active" : "" %>"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid <%= (searchQuery == null && selectedCuisine == null && vegFilter == null) ? "#CB202D" : "#e8e8e8" %>;
-                color:<%= (searchQuery == null && selectedCuisine == null && vegFilter == null) ? "#CB202D" : "#3D4152" %>;
-                background:<%= (searchQuery == null && selectedCuisine == null && vegFilter == null) ? "#f8d7da" : "white" %>;
-                text-decoration:none;">
+         class="filter-pill <%= (searchQuery == null && selectedCuisine == null && vegFilter == null) ? "active" : "" %>">
         All
       </a>
       <a href="${pageContext.request.contextPath}/restaurants?filter=veg"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid <%= vegFilter != null ? "#3d9970" : "#e8e8e8" %>;
-                color:<%= vegFilter != null ? "#3d9970" : "#3D4152" %>;
-                background:<%= vegFilter != null ? "#d4edda" : "white" %>;
-                text-decoration:none;">
-        🥦 Pure Veg
+         class="filter-pill <%= vegFilter != null ? "active-veg" : "" %>">
+        🌿 Pure Veg
       </a>
-      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Pizza"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid #e8e8e8;color:#3D4152;background:white;text-decoration:none;">
-        🍕 Pizza
-      </a>
-      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Burgers"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid #e8e8e8;color:#3D4152;background:white;text-decoration:none;">
-        🍔 Burgers
-      </a>
-      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Biryani"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid #e8e8e8;color:#3D4152;background:white;text-decoration:none;">
-        🍲 Biryani
-      </a>
-      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Chinese"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid #e8e8e8;color:#3D4152;background:white;text-decoration:none;">
-        🍜 Chinese
-      </a>
-      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Desserts"
-         style="padding:6px 14px;border-radius:20px;font-size:0.82rem;font-weight:600;
-                border:1.5px solid #e8e8e8;color:#3D4152;background:white;text-decoration:none;">
-        🍰 Desserts
-      </a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Pizza" class="filter-pill">🍕 Pizza</a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Burgers" class="filter-pill">🍔 Burgers</a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Biryani" class="filter-pill">🍲 Biryani</a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Chinese" class="filter-pill">🍜 Chinese</a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Indian" class="filter-pill">🍛 Indian</a>
+      <a href="${pageContext.request.contextPath}/restaurants?cuisine=Desserts" class="filter-pill">🍰 Desserts</a>
     </div>
   </div>
 </div>
 
 <!-- Results -->
 <div class="container my-4">
-  <p style="color:#686b78;font-size:0.9rem;margin-bottom:20px;">
-    <strong style="color:#3D4152;"><%= totalCount != null ? totalCount : 0 %></strong> restaurants found
+  <p class="results-count" data-aos="fade-up">
+    <strong><%= totalCount != null ? totalCount : 0 %></strong> restaurants found
   </p>
 
   <% if (restaurants != null && !restaurants.isEmpty()) { %>
   <div class="row g-3">
     <% int idx = 0; for (Restaurant r : restaurants) { %>
-    <div class="col-lg-3 col-md-4 col-sm-6">
+    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="<%= (idx % 4) * 60 %>">
       <a href="${pageContext.request.contextPath}/menu?id=<%= r.getId() %>"
          style="display:block;height:100%;text-decoration:none;">
         <div class="restaurant-card">
           <div class="restaurant-img-wrap">
-            <div class="img-placeholder <%= bgClasses[idx % bgClasses.length] %>">
-              <%= getEmoji(r.getCuisine()) %>
-            </div>
-            <% if (r.getDeliveryFee() == 0) { %>
-            <div class="restaurant-badge">FREE Delivery</div>
+            <img src="<%= getRestaurantImage(r.getCuisine()) %>"
+                 alt="<%= r.getName() %>"
+                 onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=220&fit=crop&q=80'">
+            <div class="img-gradient-overlay"></div>
+            <% if (!r.isOpen()) { %>
+            <div class="closed-overlay"><span>CLOSED</span></div>
             <% } %>
             <% if (r.isVeg()) { %>
-            <div class="veg-only-badge">VEG ONLY</div>
+            <div class="veg-only-badge">🌿 VEG ONLY</div>
             <% } %>
-            <% if (!r.isOpen()) { %>
-            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);
-                        display:flex;align-items:center;justify-content:center;">
-              <span style="color:white;font-weight:700;font-size:1rem;">CLOSED</span>
+            <% if (r.getDeliveryFee() == 0) { %>
+            <div class="free-delivery-badge">FREE Delivery</div>
+            <% } %>
+            <div class="restaurant-rating-overlay">
+              <i class="bi bi-star-fill"></i> <%= r.getRating() %>
             </div>
-            <% } %>
           </div>
           <div class="restaurant-info">
             <div class="restaurant-name"><%= r.getName() %></div>
             <div class="restaurant-cuisine"><%= r.getCuisine() %></div>
-            <div style="font-size:0.8rem;color:#686b78;margin-bottom:6px;">
+            <div style="font-size:0.78rem;color:#686b78;margin-bottom:6px;">
               <i class="bi bi-geo-alt me-1" style="color:#CB202D;"></i><%= r.getCity() %>
             </div>
             <div class="restaurant-meta">
-              <span class="rating">
-                <i class="bi bi-star-fill" style="font-size:0.7rem;"></i>
-                <%= r.getRating() %>
-              </span>
               <span class="delivery-time">
                 <i class="bi bi-clock me-1"></i><%= r.getDeliveryTime() %> min
               </span>
+              <span class="meta-dot">•</span>
               <span class="delivery-fee"><%= r.getDeliveryFeeDisplay() %></span>
             </div>
           </div>
@@ -166,18 +129,19 @@
   </div>
 
   <% } else { %>
-  <div class="text-center py-5 my-4">
-    <div style="font-size:5rem;opacity:0.3;">🍽️</div>
-    <h4 class="mt-3 fw-bold">No restaurants found</h4>
-    <p style="color:#686b78;">
+  <div class="empty-state" data-aos="fade-up">
+    <i class="bi bi-shop-window"></i>
+    <h4>No restaurants found</h4>
+    <p>
       <% if (searchQuery != null) { %>
-      No results for "<%= searchQuery %>". Try a different search.
+        No results for "<%= searchQuery %>". Try a different search.
       <% } else { %>
-      No restaurants available with the selected filter.
+        No restaurants available with the selected filter.
       <% } %>
     </p>
-    <a href="${pageContext.request.contextPath}/restaurants"
-       class="btn-outline-primary-custom mt-2">View All Restaurants</a>
+    <a href="${pageContext.request.contextPath}/restaurants" class="btn-outline-primary-custom mt-2">
+      View All Restaurants
+    </a>
   </div>
   <% } %>
 </div>
@@ -186,21 +150,35 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script>AOS.init({ duration: 600, once: true, offset: 50 });</script>
 </body>
 </html>
 <%!
-  private String getEmoji(String cuisine) {
-    if (cuisine == null) return "🍽️";
-    cuisine = cuisine.toLowerCase();
-    if (cuisine.contains("pizza") || cuisine.contains("italian")) return "🍕";
-    if (cuisine.contains("burger") || cuisine.contains("american")) return "🍔";
-    if (cuisine.contains("biryani") || cuisine.contains("mughlai")) return "🍲";
-    if (cuisine.contains("chinese") || cuisine.contains("asian")) return "🍜";
-    if (cuisine.contains("south indian")) return "🥘";
-    if (cuisine.contains("indian") || cuisine.contains("north")) return "🍛";
-    if (cuisine.contains("dessert") || cuisine.contains("bakery")) return "🎂";
-    if (cuisine.contains("healthy") || cuisine.contains("salad")) return "🥗";
-    return "🍽️";
+  private String getRestaurantImage(String cuisine) {
+    if (cuisine == null) return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=220&fit=crop&q=80";
+    String c = cuisine.toLowerCase();
+    if (c.contains("pizza") || c.contains("italian"))
+        return "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=220&fit=crop&q=80";
+    if (c.contains("burger") || c.contains("american"))
+        return "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=220&fit=crop&q=80";
+    if (c.contains("biryani") || c.contains("mughlai"))
+        return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=220&fit=crop&q=80";
+    if (c.contains("chinese") || c.contains("asian"))
+        return "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&h=220&fit=crop&q=80";
+    if (c.contains("south indian"))
+        return "https://images.unsplash.com/photo-1630409346517-bee4aaf50b8d?w=400&h=220&fit=crop&q=80";
+    if (c.contains("indian") || c.contains("north"))
+        return "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=220&fit=crop&q=80";
+    if (c.contains("dessert") || c.contains("bakery"))
+        return "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=220&fit=crop&q=80";
+    if (c.contains("healthy") || c.contains("salad"))
+        return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=220&fit=crop&q=80";
+    if (c.contains("sushi") || c.contains("japanese"))
+        return "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=220&fit=crop&q=80";
+    if (c.contains("mexican") || c.contains("taco"))
+        return "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=220&fit=crop&q=80";
+    return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=220&fit=crop&q=80";
   }
 %>

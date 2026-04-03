@@ -101,8 +101,8 @@ public class OrderDAO {
 
     public boolean updateOrderStatus(int orderId, String status, Integer driverId) {
         String sql = driverId != null
-            ? "UPDATE orders SET status=CAST(? AS order_status), driver_id=? WHERE id=?"
-            : "UPDATE orders SET status=CAST(? AS order_status) WHERE id=?";
+            ? "UPDATE orders SET status=?, driver_id=? WHERE id=?"
+            : "UPDATE orders SET status=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);

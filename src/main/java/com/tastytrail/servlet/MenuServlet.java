@@ -23,13 +23,12 @@ public class MenuServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String idParam = req.getParameter("id");
-        if (idParam == null) {
-            resp.sendRedirect(req.getContextPath() + "/restaurants");
-            return;
+        int restaurantId = 1; // Single restaurant — TastyTrail
+        if (idParam != null) {
+            try { restaurantId = Integer.parseInt(idParam); } catch (NumberFormatException ignored) {}
         }
 
         try {
-            int restaurantId = Integer.parseInt(idParam);
             Restaurant restaurant = restaurantDAO.getRestaurantById(restaurantId);
 
             if (restaurant == null) {

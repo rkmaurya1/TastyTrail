@@ -40,18 +40,15 @@
     <nav aria-label="breadcrumb" style="margin-bottom:16px;">
       <ol class="breadcrumb" style="font-size:0.85rem;background:none;padding:0;margin:0;">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/" style="color:#CB202D;">Home</a></li>
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/restaurants" style="color:#CB202D;">Restaurants</a></li>
-        <li class="breadcrumb-item active" style="color:#686b78;"><%= restaurant.getName() %></li>
+        <li class="breadcrumb-item active" style="color:#686b78;">Menu</li>
       </ol>
     </nav>
 
     <div class="d-flex align-items-start gap-3 flex-wrap">
-      <!-- Restaurant icon/image -->
-      <div style="width:90px;height:90px;border-radius:12px;overflow:hidden;
-                  background:linear-gradient(135deg,#CB202D,#FC8019);
-                  display:flex;align-items:center;justify-content:center;
-                  font-size:2.5rem;flex-shrink:0;box-shadow:0 4px 15px rgba(0,0,0,0.15);">
-        <%= getMenuEmoji(restaurant.getCuisine()) %>
+      <!-- Restaurant logo/image -->
+      <div style="width:90px;height:90px;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 15px rgba(0,0,0,0.15);">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=90&h=90&fit=crop&q=80"
+             alt="TastyTrail" style="width:100%;height:100%;object-fit:cover;">
       </div>
 
       <div class="flex-grow-1">
@@ -155,10 +152,13 @@
             <% } %>
           </div>
 
-          <!-- Food emoji/image + Add button -->
+          <!-- Food image + Add button -->
           <div class="menu-item-action" style="min-width:90px;text-align:center;">
-            <div style="font-size:2rem;margin-bottom:8px;">
-              <%= item.isVeg() ? "🥗" : "🍗" %>
+            <div style="margin-bottom:8px;">
+              <img src="<%= getItemImage(item.getName(), item.isVeg()) %>"
+                   alt="<%= item.getName() %>"
+                   style="width:80px;height:70px;object-fit:cover;border-radius:10px;display:block;"
+                   onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=80&h=70&fit=crop&q=80'">
             </div>
             <% if (qty != null && qty > 0) { %>
             <!-- Already in cart: show qty control -->
@@ -239,17 +239,47 @@ $(document).ready(function() {
 </body>
 </html>
 <%!
-  private String getMenuEmoji(String cuisine) {
-    if (cuisine == null) return "🍽️";
-    cuisine = cuisine.toLowerCase();
-    if (cuisine.contains("pizza") || cuisine.contains("italian")) return "🍕";
-    if (cuisine.contains("burger")) return "🍔";
-    if (cuisine.contains("biryani")) return "🍲";
-    if (cuisine.contains("chinese")) return "🍜";
-    if (cuisine.contains("south indian")) return "🥘";
-    if (cuisine.contains("indian")) return "🍛";
-    if (cuisine.contains("dessert") || cuisine.contains("bakery")) return "🎂";
-    if (cuisine.contains("healthy") || cuisine.contains("salad")) return "🥗";
-    return "🍽️";
+  private String getItemImage(String name, boolean isVeg) {
+    if (name == null) return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=160&h=120&fit=crop&q=80";
+    String n = name.toLowerCase();
+    if (n.contains("pizza") || n.contains("margherita") || n.contains("pepperoni") || n.contains("bbq chicken pizza") || n.contains("veggie supreme"))
+        return "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=160&h=120&fit=crop&q=80";
+    if (n.contains("burger") || n.contains("patty") || n.contains("smash") || n.contains("sriracha"))
+        return "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=160&h=120&fit=crop&q=80";
+    if (n.contains("biryani"))
+        return "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=160&h=120&fit=crop&q=80";
+    if (n.contains("veg biryani") || n.contains("rice"))
+        return "https://images.unsplash.com/photo-1596560548464-f010b9e51f0b?w=160&h=120&fit=crop&q=80";
+    if (n.contains("paneer") || n.contains("palak"))
+        return "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=160&h=120&fit=crop&q=80";
+    if (n.contains("dal") || n.contains("makhani"))
+        return "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=160&h=120&fit=crop&q=80";
+    if (n.contains("butter chicken") || n.contains("chicken curry"))
+        return "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=160&h=120&fit=crop&q=80";
+    if (n.contains("seekh") || n.contains("kebab") || n.contains("tikka"))
+        return "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=160&h=120&fit=crop&q=80";
+    if (n.contains("mutton") || n.contains("rogan"))
+        return "https://images.unsplash.com/photo-1545247181-516773cae754?w=160&h=120&fit=crop&q=80";
+    if (n.contains("naan") || n.contains("bread") || n.contains("roti"))
+        return "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=160&h=120&fit=crop&q=80";
+    if (n.contains("pasta") || n.contains("penne") || n.contains("alfredo") || n.contains("arrabbiata"))
+        return "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=160&h=120&fit=crop&q=80";
+    if (n.contains("garlic bread"))
+        return "https://images.unsplash.com/photo-1619985632461-f33748ef8e6e?w=160&h=120&fit=crop&q=80";
+    if (n.contains("gulab") || n.contains("jamun"))
+        return "https://images.unsplash.com/photo-1627308595229-7830a5c18037?w=160&h=120&fit=crop&q=80";
+    if (n.contains("cake") || n.contains("dessert") || n.contains("sweet"))
+        return "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=160&h=120&fit=crop&q=80";
+    if (n.contains("fries") || n.contains("loaded"))
+        return "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=160&h=120&fit=crop&q=80";
+    if (n.contains("onion ring"))
+        return "https://images.unsplash.com/photo-1639024471283-03518883512d?w=160&h=120&fit=crop&q=80";
+    if (n.contains("milkshake") || n.contains("thick"))
+        return "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=160&h=120&fit=crop&q=80";
+    if (n.contains("cold coffee") || n.contains("coffee"))
+        return "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=160&h=120&fit=crop&q=80";
+    return isVeg
+        ? "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=160&h=120&fit=crop&q=80"
+        : "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=160&h=120&fit=crop&q=80";
   }
 %>

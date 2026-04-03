@@ -23,8 +23,8 @@
              href="${pageContext.request.contextPath}/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <%= currentUri.contains("restaurants") ? "active" : "" %>"
-             href="${pageContext.request.contextPath}/restaurants">Restaurants</a>
+          <a class="nav-link <%= currentUri.contains("menu") ? "active" : "" %>"
+             href="${pageContext.request.contextPath}/menu">Menu</a>
         </li>
         <% if (navUser != null) { %>
         <li class="nav-item">

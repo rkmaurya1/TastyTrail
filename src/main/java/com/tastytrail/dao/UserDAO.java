@@ -8,7 +8,7 @@ import java.sql.*;
 public class UserDAO {
 
     public boolean registerUser(User user) {
-        String sql = "INSERT INTO users (name, email, password, phone, city, role) VALUES (?, ?, ?, ?, ?, 'CUSTOMER')";
+        String sql = "INSERT INTO users (name, email, password, phone, city, role) VALUES (?, ?, ?, ?, ?, 'USER')";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
