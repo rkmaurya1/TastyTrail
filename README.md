@@ -156,24 +156,25 @@ db.username=root
 db.password=your_password_here
 ```
 
-### 4. Build the Project
+### 4. Run the App (One Command)
 
 ```bash
-mvn clean package -DskipTests
+mvn clean package cargo:run
 ```
 
-### 5. Deploy to Tomcat
+This single command will:
+- Compile the source code
+- Build the WAR file
+- Start embedded Tomcat 10 on port 8080
+- Deploy the app automatically
 
-```bash
-cp target/TastyTrail.war /path/to/tomcat/webapps/ROOT.war
-/path/to/tomcat/bin/catalina.sh run
+### 5. Open in Browser
+
+```
+http://localhost:8080/TastyTrail
 ```
 
-### 6. Open in Browser
-
-```
-http://localhost:8080
-```
+> Keep the terminal open while using the app. Press `Ctrl+C` to stop the server.
 
 ---
 
