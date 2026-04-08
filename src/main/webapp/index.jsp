@@ -150,6 +150,29 @@
   </div>
 </section>
 
+<!-- ===================== FOOD PHOTO STRIP ===================== -->
+<div class="food-photo-strip">
+  <div class="food-photo-track">
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=280&h=180&fit=crop&q=80" alt="Cake"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=280&h=180&fit=crop&q=80" alt="Dim Sum"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=280&h=180&fit=crop&q=80" alt="Salad"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=280&h=180&fit=crop&q=80" alt="Burger"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=280&h=180&fit=crop&q=80" alt="Pizza"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=280&h=180&fit=crop&q=80" alt="Burger 2"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=280&h=180&fit=crop&q=80" alt="Curry"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=280&h=180&fit=crop&q=80" alt="Biryani"></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=280&h=180&fit=crop&q=80" alt="Cake"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=280&h=180&fit=crop&q=80" alt="Dim Sum"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=280&h=180&fit=crop&q=80" alt="Salad"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=280&h=180&fit=crop&q=80" alt="Burger"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=280&h=180&fit=crop&q=80" alt="Pizza"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=280&h=180&fit=crop&q=80" alt="Burger 2"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=280&h=180&fit=crop&q=80" alt="Curry"></div>
+    <div class="food-photo-card"><img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=280&h=180&fit=crop&q=80" alt="Biryani"></div>
+  </div>
+</div>
+
 <!-- ===================== CATEGORIES ===================== -->
 <section class="section" id="categories">
   <div class="container">
@@ -267,23 +290,6 @@
   </div>
 </section>
 
-<!-- ===================== FOOD GALLERY ===================== -->
-<section class="food-gallery-strip">
-  <div class="gallery-track">
-    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=220&h=150&fit=crop&q=80" alt="">
-    <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=220&h=150&fit=crop&q=80" alt="">
-  </div>
-</section>
 
 <!-- ===================== CTA ===================== -->
 <section class="cta-section" data-aos="fade-up">
