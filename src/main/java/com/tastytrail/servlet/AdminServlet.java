@@ -68,6 +68,18 @@ public class AdminServlet extends HttpServlet {
             orderDAO.updateOrderStatus(orderId, status, driverId);
             resp.sendRedirect(req.getContextPath() + "/admin/orders?updated=true");
 
+        } else if ("/users".equals(path)) {
+            if ("changeRole".equals(action)) {
+                int userId = Integer.parseInt(req.getParameter("userId"));
+                String role = req.getParameter("role");
+                userDAO.updateRole(userId, role);
+                resp.sendRedirect(req.getContextPath() + "/admin/users?roleUpdated=true");
+            } else if ("delete".equals(action)) {
+                int userId = Integer.parseInt(req.getParameter("userId"));
+                userDAO.deleteUser(userId);
+                resp.sendRedirect(req.getContextPath() + "/admin/users?deleted=true");
+            }
+
         } else if ("/restaurants".equals(path)) {
             if ("add".equals(action)) {
                 Restaurant r = buildRestaurantFromRequest(req);

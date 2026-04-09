@@ -1918,15 +1918,146 @@ footer a:hover { color: white; }
   color: rgba(255,255,255,0.4);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .hero h1 { font-size: 1.8rem; }
-  .hero { padding: 50px 0 60px; }
-  .hero-search { flex-wrap: wrap; }
-  .hero-search .location-input { border-right: none; width: 100%; border-bottom: 1px solid var(--border); }
-  .hero-stats { gap: 1rem; }
+/* =============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================= */
+
+/* Medium screens (tablets 768px – 991px) */
+@media (max-width: 991px) {
+  .hero {
+    padding: 50px 0 60px;
+    min-height: auto;
+    align-items: flex-start;
+  }
+  .hero h1 { font-size: 2.4rem; }
+  .hero-content { text-align: center; }
+  .hero-badge { margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; }
+  .hero-stats-row { justify-content: center; }
+
+  /* About section — floating badges overflow on tablet */
+  .about-badge-box { left: 0; bottom: 12px; }
+  .about-stat-pill { right: 0; }
+
+  .cta-inner { padding: 48px 28px; }
+  .cta-inner h2 { font-size: 1.6rem; }
+
+  .section { padding: 40px 0; }
+
+  /* Location modal full width on tablet */
+  .loc-modal-box { max-width: 95vw; }
+}
+
+/* Small screens (mobile < 768px) */
+@media (max-width: 767px) {
+  .hero {
+    padding: 40px 0 50px;
+    min-height: auto;
+  }
+  .hero h1 { font-size: 1.9rem; line-height: 1.2; }
+  .hero-content { text-align: center; }
+  .hero-badge { margin-left: auto; margin-right: auto; }
+  .hero-desc { font-size: 0.92rem; }
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-hero-primary,
+  .btn-hero-secondary { width: 100%; justify-content: center; }
+  .hero-stats-row { justify-content: center; gap: 8px; }
+  .hero-stat-box { min-width: 90px; padding: 10px 12px; flex: 0 1 auto; }
+
+  /* About — hide overflowing absolute badges on small mobile */
+  .about-badge-box { display: none; }
+  .about-stat-pill { display: none; }
+  .about-main-img { height: 260px; border-radius: 16px; }
+
+  /* CTA */
+  .cta-inner { padding: 36px 20px; border-radius: 18px; }
+  .cta-inner h2 { font-size: 1.3rem; }
+
+  /* Section */
+  .section { padding: 32px 0; }
+  .section-title { font-size: 1.2rem; }
+
+  /* Cuisine scroll smaller circles */
+  .cuisine-icon-img { width: 68px; height: 68px; }
+  .cuisine-card { min-width: 78px; }
+
+  /* Restaurant cards */
   .restaurant-img-wrap { height: 150px; }
-  .auth-card { padding: 24px; }
+
+  /* Auth cards */
+  .auth-card { padding: 24px 18px; }
+
+  /* Cart page */
+  .cart-item-row { flex-wrap: wrap; gap: 10px; }
+  .cart-item-subtotal { text-align: left; }
+
+  /* Menu page header meta wraps cleanly */
+  .restaurant-header-meta { gap: 8px; }
+  .meta-pill, .rating-pill { font-size: 0.78rem; padding: 3px 9px; }
+
+  /* Footer links */
+  footer { padding: 36px 0 16px; }
+
+  /* Location modal */
+  .loc-modal-overlay { padding-top: 56px; }
+  .loc-modal-box { max-width: 96vw; border-radius: 14px; }
+
+  /* Toast */
+  .toast-container { bottom: 16px; right: 16px; left: 16px; }
+  .tt-toast { max-width: 100%; }
+
+  /* Navbar brand smaller on mobile */
+  .navbar-brand { font-size: 1.3rem; }
+
+  /* Mobile nav collapse panel */
+  .navbar-collapse {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 12px 0 16px;
+    margin-top: 4px;
+  }
+  .navbar-collapse .nav-link { padding: 10px 16px !important; }
+  .navbar-collapse .navbar-nav.align-items-center {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 16px 0;
+    align-items: center !important;
+  }
+  .loc-btn { margin-left: 0; }
+
+  /* Food photo strip smaller cards */
+  .food-photo-card { width: 160px; height: 110px; }
+
+  /* Feature cards in why section */
+  .feature-card { padding: 22px 16px; }
+
+  /* Contact cards */
+  .contact-card { padding: 20px 16px; }
+
+  /* Profile */
+  .profile-card { padding: 20px 16px; }
+}
+
+/* Extra small (< 480px) */
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.6rem; }
+  .hero-stat-box .num { font-size: 1rem; }
+  .btn-hero-primary, .btn-hero-secondary { font-size: 0.9rem; padding: 11px 20px; }
+
+  .cta-inner h2 { font-size: 1.15rem; }
+  .btn-cta { padding: 12px 28px; font-size: 0.9rem; }
+
+  .menu-item-card { gap: 10px; padding: 12px; }
+  .menu-item-action { min-width: 76px; }
+
+  .cuisine-icon-img { width: 58px; height: 58px; }
+  .cuisine-card { min-width: 68px; }
+  .cuisine-name { font-size: 0.72rem; }
 }
 
 /* ===================== FOOD PHOTO STRIP ===================== */

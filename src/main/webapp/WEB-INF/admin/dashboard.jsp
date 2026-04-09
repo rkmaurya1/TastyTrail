@@ -21,7 +21,9 @@
     .sidebar .nav-link i { font-size: 1rem; width: 20px; }
     .main-content { margin-left: 240px; padding: 30px; }
     .topbar { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 10px rgba(0,0,0,0.06); }
-    .stat-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 10px rgba(0,0,0,0.06); height: 100%; }
+    .stat-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 10px rgba(0,0,0,0.06); height: 100%; transition: transform 0.15s, box-shadow 0.15s; }
+    a.stat-card-link { text-decoration: none; color: inherit; display: block; height: 100%; }
+    a.stat-card-link:hover .stat-card { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); cursor: pointer; }
     .stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
     .stat-num { font-size: 1.8rem; font-weight: 700; color: #1C1C1C; }
     .stat-label { font-size: 0.82rem; color: #686b78; }
@@ -76,64 +78,72 @@
   <!-- Stat Cards -->
   <div class="row g-3 mb-4">
     <div class="col-lg-3 col-md-6">
-      <div class="stat-card">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="stat-num"><%= request.getAttribute("totalOrders") %></div>
-            <div class="stat-label">Total Orders</div>
+      <a href="${pageContext.request.contextPath}/admin/orders" class="stat-card-link">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="stat-num"><%= request.getAttribute("totalOrders") %></div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-icon" style="background:#fff3f3;color:#CB202D;">
+              <i class="bi bi-bag-check"></i>
+            </div>
           </div>
-          <div class="stat-icon" style="background:#fff3f3;color:#CB202D;">
-            <i class="bi bi-bag-check"></i>
+          <div style="margin-top:12px;font-size:0.78rem;color:#3d9970;">
+            <i class="bi bi-arrow-up-short"></i> All time
           </div>
         </div>
-        <div style="margin-top:12px;font-size:0.78rem;color:#3d9970;">
-          <i class="bi bi-arrow-up-short"></i> All time
-        </div>
-      </div>
+      </a>
     </div>
     <div class="col-lg-3 col-md-6">
-      <div class="stat-card">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="stat-num">₹<%= request.getAttribute("totalRevenue") %></div>
-            <div class="stat-label">Total Revenue</div>
+      <a href="${pageContext.request.contextPath}/admin/orders?status=DELIVERED" class="stat-card-link">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="stat-num">₹<%= request.getAttribute("totalRevenue") %></div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-icon" style="background:#e8f5e9;color:#3d9970;">
+              <i class="bi bi-currency-rupee"></i>
+            </div>
           </div>
-          <div class="stat-icon" style="background:#e8f5e9;color:#3d9970;">
-            <i class="bi bi-currency-rupee"></i>
+          <div style="margin-top:12px;font-size:0.78rem;color:#3d9970;">
+            <i class="bi bi-arrow-up-short"></i> Delivered orders
           </div>
         </div>
-        <div style="margin-top:12px;font-size:0.78rem;color:#3d9970;">
-          <i class="bi bi-arrow-up-short"></i> Delivered orders
-        </div>
-      </div>
+      </a>
     </div>
     <div class="col-lg-3 col-md-6">
-      <div class="stat-card">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="stat-num"><%= request.getAttribute("totalRestaurants") %></div>
-            <div class="stat-label">Restaurants</div>
+      <a href="${pageContext.request.contextPath}/admin/restaurants" class="stat-card-link">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="stat-num"><%= request.getAttribute("totalRestaurants") %></div>
+              <div class="stat-label">Restaurants</div>
+            </div>
+            <div class="stat-icon" style="background:#fff8e1;color:#f59e0b;">
+              <i class="bi bi-shop"></i>
+            </div>
           </div>
-          <div class="stat-icon" style="background:#fff8e1;color:#f59e0b;">
-            <i class="bi bi-shop"></i>
-          </div>
+          <div style="margin-top:12px;font-size:0.78rem;color:#686b78;">Active restaurants</div>
         </div>
-        <div style="margin-top:12px;font-size:0.78rem;color:#686b78;">Active restaurants</div>
-      </div>
+      </a>
     </div>
     <div class="col-lg-3 col-md-6">
-      <div class="stat-card">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="stat-num"><%= request.getAttribute("totalUsers") %></div>
-            <div class="stat-label">Total Users</div>
+      <a href="${pageContext.request.contextPath}/admin/users" class="stat-card-link">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="stat-num"><%= request.getAttribute("totalUsers") %></div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-icon" style="background:#e8f0fe;color:#4285f4;">
+              <i class="bi bi-people"></i>
+            </div>
           </div>
-          <div class="stat-icon" style="background:#e8f0fe;color:#4285f4;">
-            <i class="bi bi-people"></i>
-          </div>
+          <div style="margin-top:12px;font-size:0.78rem;color:#686b78;">Registered users</div>
         </div>
-        <div style="margin-top:12px;font-size:0.78rem;color:#686b78;">Registered users</div>
-      </div>
+      </a>
     </div>
   </div>
 

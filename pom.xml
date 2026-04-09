@@ -43,11 +43,11 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>3.0.1</version>
         </dependency>
-        <!-- MySQL Connector -->
+        <!-- MySQL Connector (9.x supports MySQL 9.x) -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.3.0</version>
+            <version>9.1.0</version>
         </dependency>
         <!-- BCrypt Password Hashing -->
         <dependency>
@@ -60,6 +60,20 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
+        </dependency>
+        <!-- Eclipse JDT compiler for JSP compilation with Java 11+ -->
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>ecj</artifactId>
+            <version>3.37.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Tomcat Jasper for JSP compilation support -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>10.1.18</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -74,11 +88,21 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+            <!-- Print URL after server starts -->
+            <!-- exec-maven-plugin removed: bash not available on Windows -->
             <!-- Tomcat 10 run plugin -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
                 <version>1.10.12</version>
+                <dependencies>
+                    <!-- ECJ compiler: needed for JSP compilation on Java 11+ -->
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <version>3.37.0</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <container>
                         <containerId>tomcat10x</containerId>
