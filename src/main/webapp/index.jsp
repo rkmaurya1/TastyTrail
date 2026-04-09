@@ -395,56 +395,58 @@
             <i class="bi bi-geo-alt-fill"></i>
           </div>
           <h5>Our Location</h5>
-          <p>123 Food Street, Connaught Place<br>New Delhi - 110001</p>
-          <a href="#" class="contact-link">Get Directions <i class="bi bi-arrow-right ms-1"></i></a>
+          <p id="contactLocationText">
+            <%= (restaurant != null && restaurant.getAddress() != null && !restaurant.getAddress().isEmpty())
+                ? restaurant.getAddress()
+                : "Address not set" %>
+            <% if (restaurant != null && restaurant.getCity() != null && !restaurant.getCity().isEmpty()) { %>
+              <br><%= restaurant.getCity() %>
+            <% } %>
+          </p>
+          <a href="#" id="contactDirectionsLink" target="_blank" class="contact-link">
+            Get Directions <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+          <script>
+          (function() {
+            function updateContactLocation() {
+              var loc = localStorage.getItem('tastytrail_location');
+              if (loc) {
+                document.getElementById('contactLocationText').innerHTML = loc;
+                document.getElementById('contactDirectionsLink').href =
+                  'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc);
+              }
+            }
+            updateContactLocation();
+            window.addEventListener('locationUpdated', updateContactLocation);
+          })();
+          </script>
         </div>
       </div>
+      <%
+        String phone = (restaurant != null && restaurant.getPhone() != null && !restaurant.getPhone().isEmpty())
+                       ? restaurant.getPhone() : "+91 98765 43210";
+        String phoneClean = phone.replaceAll("[^+0-9]", "");
+        String email = "hello@tastytrail.com";
+      %>
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="contact-card">
+        <a href="tel:<%= phoneClean %>" class="contact-card contact-card-link">
           <div class="contact-icon" style="background:linear-gradient(135deg,#45aaf2,#2d98da);">
             <i class="bi bi-telephone-fill"></i>
           </div>
           <h5>Call Us</h5>
-          <p>+91 98765 43210<br>Mon–Sun: 9 AM – 11 PM</p>
-          <a href="tel:+919876543210" class="contact-link">Call Now <i class="bi bi-arrow-right ms-1"></i></a>
-        </div>
+          <p><%= phone %><br>Mon–Sun: 9 AM – 11 PM</p>
+          <span class="contact-link">Call Now <i class="bi bi-arrow-right ms-1"></i></span>
+        </a>
       </div>
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="contact-card">
+        <a href="mailto:<%= email %>" class="contact-card contact-card-link">
           <div class="contact-icon" style="background:linear-gradient(135deg,#26de81,#20bf6b);">
             <i class="bi bi-envelope-fill"></i>
           </div>
           <h5>Email Us</h5>
-          <p>hello@tastytrail.com<br>We reply within 2 hours</p>
-          <a href="mailto:hello@tastytrail.com" class="contact-link">Send Email <i class="bi bi-arrow-right ms-1"></i></a>
-        </div>
-      </div>
-
-      <!-- Contact Form -->
-      <div class="col-lg-8 mt-3" data-aos="fade-up" data-aos-delay="100">
-        <div class="contact-form-card">
-          <h4 style="font-weight:700;margin-bottom:6px;">Send us a message</h4>
-          <p style="color:#686b78;font-size:0.9rem;margin-bottom:24px;">Feedback, complaint, ya koi bhi baat — hum sunenge!</p>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <input type="text" class="contact-input" placeholder="Your Name">
-            </div>
-            <div class="col-md-6">
-              <input type="email" class="contact-input" placeholder="Email Address">
-            </div>
-            <div class="col-12">
-              <input type="text" class="contact-input" placeholder="Subject">
-            </div>
-            <div class="col-12">
-              <textarea class="contact-input" rows="4" placeholder="Your message..."></textarea>
-            </div>
-            <div class="col-12">
-              <button class="btn-contact-submit">
-                <i class="bi bi-send-fill me-2"></i> Send Message
-              </button>
-            </div>
-          </div>
-        </div>
+          <p><%= email %><br>We reply within 2 hours</p>
+          <span class="contact-link">Send Email <i class="bi bi-arrow-right ms-1"></i></span>
+        </a>
       </div>
     </div>
   </div>

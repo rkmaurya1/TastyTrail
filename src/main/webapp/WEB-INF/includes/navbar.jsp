@@ -13,6 +13,16 @@
     <a class="navbar-brand" href="${pageContext.request.contextPath}/">
       Tasty<span>Trail</span>
     </a>
+
+    <!-- Location Selector -->
+    <button class="loc-btn d-none d-lg-flex" id="locationBtn" onclick="openLocationModal()">
+      <i class="bi bi-geo-alt-fill" style="color:#CB202D;"></i>
+      <div class="loc-btn-text">
+        <span class="loc-label">Deliver to</span>
+        <span class="loc-value" id="navLocationText">Select Location</span>
+      </div>
+      <i class="bi bi-chevron-down" style="font-size:0.75rem;color:#686b78;"></i>
+    </button>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -93,3 +103,128 @@
     </div>
   </div>
 </nav>
+
+<!-- ===== LOCATION MODAL ===== -->
+<div id="locationModal" class="loc-modal-overlay" onclick="closeLocationModal(event)">
+  <div class="loc-modal-box">
+    <div class="loc-modal-header">
+      <h5><i class="bi bi-geo-alt-fill me-2" style="color:#CB202D;"></i>Choose Delivery Location</h5>
+      <button onclick="closeLocationModal()" class="loc-modal-close">&times;</button>
+    </div>
+    <div class="loc-modal-body">
+      <button class="loc-gps-btn" onclick="detectLocation()">
+        <i class="bi bi-crosshair2"></i>
+        Use my current location
+      </button>
+      <div class="loc-divider"><span>or enter manually</span></div>
+      <div class="loc-input-wrap">
+        <i class="bi bi-search loc-input-icon"></i>
+        <input type="text" id="locationInput" class="loc-input"
+               placeholder="Search city, area or pincode..."
+               oninput="filterLocations(this.value)">
+      </div>
+      <div id="locationSuggestions" class="loc-suggestions"></div>
+      <div class="loc-popular">
+        <p class="loc-popular-label">Popular Cities</p>
+        <div class="loc-chips">
+          <button class="loc-chip" onclick="selectLocation('New Delhi')">New Delhi</button>
+          <button class="loc-chip" onclick="selectLocation('Mumbai')">Mumbai</button>
+          <button class="loc-chip" onclick="selectLocation('Bengaluru')">Bengaluru</button>
+          <button class="loc-chip" onclick="selectLocation('Hyderabad')">Hyderabad</button>
+          <button class="loc-chip" onclick="selectLocation('Pune')">Pune</button>
+          <button class="loc-chip" onclick="selectLocation('Chennai')">Chennai</button>
+          <button class="loc-chip" onclick="selectLocation('Kolkata')">Kolkata</button>
+          <button class="loc-chip" onclick="selectLocation('Ahmedabad')">Ahmedabad</button>
+        </div>
+      </div>
+    </div>
+    <div class="loc-modal-footer">
+      <span id="locSelectedPreview" class="loc-selected-preview"></span>
+      <button class="loc-confirm-btn" id="locConfirmBtn" onclick="confirmLocation()" disabled>
+        Confirm Location
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var saved = localStorage.getItem('tastytrail_location');
+  if (saved) document.getElementById('navLocationText').textContent = saved;
+})();
+
+var pendingLocation = null;
+
+function openLocationModal() {
+  document.getElementById('locationModal').classList.add('active');
+  setTimeout(function() { document.getElementById('locationInput').focus(); }, 200);
+}
+
+function closeLocationModal(e) {
+  if (!e || e.target === document.getElementById('locationModal')) {
+    document.getElementById('locationModal').classList.remove('active');
+    pendingLocation = null;
+    document.getElementById('locSelectedPreview').textContent = '';
+    document.getElementById('locConfirmBtn').disabled = true;
+    document.getElementById('locationInput').value = '';
+    document.getElementById('locationSuggestions').innerHTML = '';
+  }
+}
+
+function selectLocation(loc) {
+  pendingLocation = loc;
+  document.getElementById('locSelectedPreview').textContent = '\uD83D\uDCCD ' + loc;
+  document.getElementById('locConfirmBtn').disabled = false;
+  document.getElementById('locationInput').value = loc;
+  document.getElementById('locationSuggestions').innerHTML = '';
+}
+
+function confirmLocation() {
+  if (!pendingLocation) return;
+  localStorage.setItem('tastytrail_location', pendingLocation);
+  document.getElementById('navLocationText').textContent = pendingLocation;
+  document.getElementById('locationModal').classList.remove('active');
+  // Update "Our Location" card if present on page
+  var contactEl = document.getElementById('contactLocationText');
+  if (contactEl) contactEl.innerHTML = pendingLocation;
+  var dirLink = document.getElementById('contactDirectionsLink');
+  if (dirLink) dirLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(pendingLocation);
+  window.dispatchEvent(new Event('locationUpdated'));
+  pendingLocation = null;
+}
+
+function filterLocations(val) {
+  var cities = ['New Delhi','Mumbai','Bengaluru','Hyderabad','Pune','Chennai','Kolkata','Ahmedabad',
+                'Jaipur','Lucknow','Chandigarh','Noida','Gurgaon','Indore','Bhopal','Surat'];
+  var box = document.getElementById('locationSuggestions');
+  if (!val.trim()) { box.innerHTML = ''; return; }
+  var matches = cities.filter(function(c) { return c.toLowerCase().includes(val.toLowerCase()); });
+  if (!matches.length) matches = [val];
+  box.innerHTML = matches.map(function(c) {
+    return '<div class="loc-suggestion-item" onclick="selectLocation(\'' + c.replace(/'/g,"\\'") + '\')">'
+         + '<i class="bi bi-geo-alt me-2" style="color:#CB202D;"></i>' + c + '</div>';
+  }).join('');
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+  var btn = document.querySelector('.loc-gps-btn');
+  btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Detecting...';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude
+          + '&lon=' + pos.coords.longitude + '&format=json')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var loc = d.address.city || d.address.town || d.address.village || d.address.state || 'Your Location';
+        selectLocation(loc);
+        btn.innerHTML = '<i class="bi bi-crosshair2"></i> Use my current location';
+        btn.disabled = false;
+      });
+  }, function() {
+    btn.innerHTML = '<i class="bi bi-crosshair2"></i> Use my current location';
+    btn.disabled = false;
+    alert('Could not detect location. Please enter manually.');
+  });
+}
+</script>
