@@ -69,16 +69,20 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
              data-bs-toggle="dropdown">
-            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#CB202D,#FC8019);
-                        color:white;display:flex;align-items:center;justify-content:center;
-                        font-weight:700;font-size:0.85rem;">
+            <div style="width:34px;height:34px;border-radius:50%;
+                        background:linear-gradient(135deg,#1F2330 0%,#0F1115 100%);
+                        color:#fff;display:flex;align-items:center;justify-content:center;
+                        font-weight:600;font-size:0.86rem;letter-spacing:-0.01em;
+                        box-shadow:0 1px 2px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.08);">
               <%= navUser.getName().substring(0,1).toUpperCase() %>
             </div>
-            <span class="d-none d-lg-inline" style="font-size:0.9rem;font-weight:600;">
+            <span class="d-none d-lg-inline" style="font-size:0.9rem;font-weight:600;letter-spacing:-0.01em;">
               <%= navUser.getName().split(" ")[0] %>
             </span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" style="border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:none;min-width:160px;">
+          <ul class="dropdown-menu dropdown-menu-end"
+              style="border-radius:14px;box-shadow:0 12px 40px rgba(15,17,21,0.14);
+                     border:1px solid #ECEEF1;min-width:180px;padding:6px;">
             <li><a class="dropdown-item py-2" href="${pageContext.request.contextPath}/profile">
               <i class="bi bi-person me-2"></i>Profile</a></li>
             <li><a class="dropdown-item py-2" href="${pageContext.request.contextPath}/orders">

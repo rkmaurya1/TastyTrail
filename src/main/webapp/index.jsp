@@ -43,7 +43,9 @@
   <title>TastyTrail — Order Food Online</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   <script>var contextPath = '${pageContext.request.contextPath}';</script>
@@ -242,7 +244,7 @@
 </section>
 
 <!-- ===================== WHY TASTYTRAIL ===================== -->
-<section class="section" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);position:relative;overflow:hidden;">
+<section class="section" style="background:linear-gradient(180deg,#0B0D12 0%,#131722 100%);position:relative;overflow:hidden;">
   <div class="features-bg-dots"></div>
   <div class="container" style="position:relative;z-index:1;">
     <div class="text-center mb-5" data-aos="fade-up">
